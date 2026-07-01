@@ -1,0 +1,286 @@
+<Window x:Class="GnomeWin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GnomeTopBar"
+        Height="44" Width="1920" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        Top="0" Left="0">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="MainBarBackground" Color="#D20A0A0A"/>
+        <SolidColorBrush x:Key="MainBarForeground" Color="White"/>
+        <SolidColorBrush x:Key="MainBarSeparatorBrush" Color="#33FFFFFF"/>
+        <SolidColorBrush x:Key="MainBarButtonOverlay" Color="#14FFFFFF"/>
+        <SolidColorBrush x:Key="MainBarAccent" Color="#3D8BFF"/>
+        <DropShadowEffect x:Key="TextShadow" Color="Black" BlurRadius="4" ShadowDepth="1" Opacity="0.8"/>
+
+        <!-- ===== Тёмный стиль дня календаря ===== -->
+        <Style x:Key="DarkCalendarDayButtonStyle" TargetType="{x:Type CalendarDayButton}">
+            <Setter Property="Foreground" Value="{DynamicResource MainBarForeground}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CalendarDayButton}">
+                        <Grid>
+                            <Border x:Name="Bg" CornerRadius="8" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" Margin="1"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource MainBarButtonOverlay}"/>
+                            </Trigger>
+                            <Trigger Property="IsToday" Value="True">
+                                <Setter TargetName="Bg" Property="BorderBrush" Value="{DynamicResource MainBarAccent}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource MainBarAccent}"/>
+                                <Setter TargetName="Bg" Property="BorderBrush" Value="{DynamicResource MainBarAccent}"/>
+                            </Trigger>
+                            <Trigger Property="IsInactive" Value="True">
+                                <Setter Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                            <Trigger Property="IsBlackedOut" Value="True">
+                                <Setter Property="Opacity" Value="0.25"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===== Тёмный стиль кнопок месяца/года (выбор года и десятилетия) ===== -->
+        <Style x:Key="DarkCalendarButtonStyle" TargetType="{x:Type CalendarButton}">
+            <Setter Property="Foreground" Value="{DynamicResource MainBarForeground}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CalendarButton}">
+                        <Grid>
+                            <Border x:Name="Bg" CornerRadius="8" Background="Transparent" Margin="2"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource MainBarButtonOverlay}"/>
+                            </Trigger>
+                            <Trigger Property="IsInactive" Value="True">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===== Навигационная кнопка "‹ ›" внутри шапки календаря ===== -->
+        <Style x:Key="CalendarNavButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource MainBarForeground}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" CornerRadius="6" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource MainBarButtonOverlay}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===== Заголовок-шапка календаря + сетка дней/месяцев/лет (сама "рамка" виджета) ===== -->
+        <Style x:Key="DarkCalendarItemStyle" TargetType="{x:Type CalendarItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CalendarItem}">
+                        <Grid Name="PART_Root">
+                            <Grid.Resources>
+                                <Style x:Key="DayTitleStyle" TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource MainBarForeground}"/>
+                                    <Setter Property="Opacity" Value="0.5"/>
+                                    <Setter Property="FontSize" Value="10"/>
+                                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="2,0,2,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Name="PART_PreviousButton" Grid.Column="0" Width="26" Height="26" Content="‹" FontSize="14" Style="{StaticResource CalendarNavButtonStyle}"/>
+                                <Button Name="PART_HeaderButton" Grid.Column="1" HorizontalAlignment="Center" FontSize="13" FontWeight="SemiBold" Padding="10,3" Style="{StaticResource CalendarNavButtonStyle}"/>
+                                <Button Name="PART_NextButton" Grid.Column="2" Width="26" Height="26" Content="›" FontSize="14" Style="{StaticResource CalendarNavButtonStyle}"/>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Name="PART_MonthView" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="28"/>
+                                    <RowDefinition Height="28"/>
+                                    <RowDefinition Height="28"/>
+                                    <RowDefinition Height="28"/>
+                                    <RowDefinition Height="28"/>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+                            </Grid>
+
+                            <Grid Grid.Row="1" Name="PART_YearView" Visibility="Collapsed" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="32"/>
+                                    <RowDefinition Height="32"/>
+                                    <RowDefinition Height="32"/>
+                                </Grid.RowDefinitions>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===== Итоговый стиль самого Calendar — подключает три стиля выше ===== -->
+        <Style x:Key="DarkCalendarStyle" TargetType="{x:Type Calendar}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CalendarButtonStyle" Value="{StaticResource DarkCalendarButtonStyle}"/>
+            <Setter Property="CalendarDayButtonStyle" Value="{StaticResource DarkCalendarDayButtonStyle}"/>
+            <Setter Property="CalendarItemStyle" Value="{StaticResource DarkCalendarItemStyle}"/>
+        </Style>
+
+        <Storyboard x:Key="EqAnim1" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="Eq1" Storyboard.TargetProperty="Height" From="4" To="14" Duration="0:0:0.42"/>
+        </Storyboard>
+        <Storyboard x:Key="EqAnim2" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="Eq2" Storyboard.TargetProperty="Height" From="6" To="18" Duration="0:0:0.55"/>
+        </Storyboard>
+        <Storyboard x:Key="EqAnim3" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="Eq3" Storyboard.TargetProperty="Height" From="8" To="20" Duration="0:0:0.33"/>
+        </Storyboard>
+        <Storyboard x:Key="EqAnim4" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="Eq4" Storyboard.TargetProperty="Height" From="5" To="16" Duration="0:0:0.61"/>
+        </Storyboard>
+        <Storyboard x:Key="EqAnim5" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="Eq5" Storyboard.TargetProperty="Height" From="7" To="19" Duration="0:0:0.47"/>
+        </Storyboard>
+    </Window.Resources>
+
+    <Border Height="32" VerticalAlignment="Top"
+            Background="{DynamicResource MainBarBackground}"
+            BorderBrush="{DynamicResource MainBarSeparatorBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="0,0,12,12"
+            PreviewMouseRightButtonUp="MainBar_RightClick">
+
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.4" Direction="270"/>
+        </Border.Effect>
+
+        <Grid>
+            <!-- Слева: Док программ и Дата -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="14,0,0,0">
+                <Border x:Name="AppsToggleBtn" Width="30" Height="24" CornerRadius="6" Background="{DynamicResource MainBarButtonOverlay}" Cursor="Hand"
+                        PreviewMouseDown="AppsToggle_Click" Margin="0,0,12,0">
+                    <TextBlock x:Name="AppsToggleArrow" Text="▾" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="16" FontWeight="Bold"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <Border x:Name="DateBorder" Cursor="Hand" MouseLeftButtonDown="Clock_Click" Background="Transparent" CornerRadius="6" Padding="6,2,6,2">
+                    <TextBlock x:Name="DateText" Text="Вт, 10 июня" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="12.5" FontWeight="Medium" VerticalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <!-- По центру: Часы (или музыка) -->
+            <Border x:Name="ClockBorder" HorizontalAlignment="Center" VerticalAlignment="Center" Cursor="Hand" MouseLeftButtonDown="Clock_Click" Background="Transparent" CornerRadius="6" Padding="12,2,12,2">
+                <Grid>
+                    <TextBlock x:Name="ClockText" Text="12:34" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform x:Name="ClockTranslate" X="0"/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <StackPanel x:Name="EqualizerPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Opacity="0" Height="16" IsHitTestVisible="False">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform x:Name="EqualizerTranslate" X="18"/>
+                        </StackPanel.RenderTransform>
+                        <Rectangle x:Name="Eq1" Width="3" Height="5" Fill="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" RadiusX="1.5" RadiusY="1.5" Margin="1.5,0" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="Eq2" Width="3" Height="9" Fill="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" RadiusX="1.5" RadiusY="1.5" Margin="1.5,0" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="Eq3" Width="3" Height="14" Fill="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" RadiusX="1.5" RadiusY="1.5" Margin="1.5,0" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="Eq4" Width="3" Height="7" Fill="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" RadiusX="1.5" RadiusY="1.5" Margin="1.5,0" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="Eq5" Width="3" Height="11" Fill="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" RadiusX="1.5" RadiusY="1.5" Margin="1.5,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Справа: Погода, Раскладка и Центр управления -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,14,0">
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock x:Name="WeatherIcon" Text="☁" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="13" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="WeatherText" Text="..." Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="12.5" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <Rectangle Width="1" Height="14" Fill="{DynamicResource MainBarSeparatorBrush}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+
+                <Border Cursor="Hand" MouseLeftButtonDown="Layout_Click" Background="Transparent" CornerRadius="4" Padding="6,2,6,2" Margin="0,0,8,0">
+                    <TextBlock x:Name="LayoutText" Text="RU" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" VerticalAlignment="Center"/>
+                </Border>
+
+                <Rectangle Width="1" Height="14" Fill="{DynamicResource MainBarSeparatorBrush}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                <!-- Группа системных значков (сеть, батарея) -->
+                <Border x:Name="SystemBorder" Background="Transparent" CornerRadius="6" Padding="6,2,6,2">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="NetSpeedText" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center" Margin="0,0,12,0">
+                            <Run Text="↓ "/><Run x:Name="NetDown" Text="0.0 "/>
+                            <Run Text="↑ "/><Run x:Name="NetUp" Text="0.0 MB/s"/>
+                        </TextBlock>
+
+                        <StackPanel x:Name="BatteryPanel" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                            <TextBlock x:Name="BatteryIcon" Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock x:Name="BatteryText" Text="100%" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Border Cursor="Hand" MouseLeftButtonDown="Volume_Click" Background="Transparent" CornerRadius="4" Padding="4,2,4,2">
+                            <TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource MainBarForeground}" Effect="{DynamicResource TextShadow}" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

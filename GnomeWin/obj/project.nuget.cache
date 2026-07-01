@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZwJafmlJJnc=",
+  "success": true,
+  "projectFilePath": "D:\\VSprog\\GnomeWin\\GnomeWin\\GnomeWin\\GnomeWin.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\phrnx\\.nuget\\packages\\microsoft.win32.systemevents\\10.0.9\\microsoft.win32.systemevents.10.0.9.nupkg.sha512",
+    "C:\\Users\\phrnx\\.nuget\\packages\\system.drawing.common\\10.0.9\\system.drawing.common.10.0.9.nupkg.sha512",
+    "C:\\Users\\phrnx\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
+  ],
+  "logs": []
+}
