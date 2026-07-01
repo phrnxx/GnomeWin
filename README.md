@@ -8,8 +8,6 @@ Smooth Interface: Native animations for all panel elements.
 
 Calendar Widget: Convenient calendar access by clicking on the date.
 
-Control Center: Quick access to system settings and indicators.
-
 System Integration: Displays the current keyboard layout, battery level, and network activity/status.
 
 Live Equalizer: The panel automatically detects music playback and displays a real-time visualizer.
